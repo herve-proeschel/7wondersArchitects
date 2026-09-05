@@ -294,8 +294,17 @@ h1 {
 }
 
 .res-player {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-size: 1.15rem;
   font-weight: 600;
+}
+
+.first-player-flag {
+  color: #dfb15b;
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .res-wonder {

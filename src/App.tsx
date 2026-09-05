@@ -48,6 +48,7 @@ function App() {
   const [nameInput, setNameInput] = useState('')
   const [includeMedals, setIncludeMedals] = useState(readSavedMedals)
   const [assignments, setAssignments] = useState<Assignment[]>([])
+  const [firstPlayerIndex, setFirstPlayerIndex] = useState<number | null>(null)
 
   useEffect(() => {
     localStorage.setItem(PLAYERS_STORAGE_KEY, JSON.stringify(players))
@@ -77,12 +78,14 @@ function App() {
       currentPlayers.filter((_, index) => index !== indexToRemove),
     )
     setAssignments([])
+    setFirstPlayerIndex(null)
     triggerHaptic()
   }
 
   function clearAllPlayers() {
     setPlayers([])
     setAssignments([])
+    setFirstPlayerIndex(null)
   }
 
   function drawWonders() {
@@ -99,6 +102,7 @@ function App() {
         wonder: shuffledWonders[index],
       })),
     )
+    setFirstPlayerIndex(Math.floor(Math.random() * players.length))
     triggerHaptic()
   }
 
@@ -197,7 +201,14 @@ function App() {
       <div className="results-viewport" aria-live="polite">
         {assignments.map((assignment, index) => (
           <div className="result-card" key={`${assignment.player}-${index}`}>
-            <span className="res-player">{assignment.player}</span>
+            <span className="res-player">
+              {index === firstPlayerIndex && (
+                <span className="first-player-flag" aria-label="Premier joueur">
+                  ⚑
+                </span>
+              )}
+              {assignment.player}
+            </span>
             <span className="res-wonder">{assignment.wonder}</span>
           </div>
         ))}

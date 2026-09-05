@@ -11,7 +11,8 @@ function readSavedPlayers(): string[] {
 
   try {
     const players = JSON.parse(saved)
-    return Array.isArray(players) && players.every((player) => typeof player === 'string')
+    return Array.isArray(players) &&
+      players.every((player) => typeof player === 'string')
       ? players
       : []
   } catch {
@@ -33,7 +34,10 @@ function shuffle<T>(items: T[]): T[] {
 
   for (let index = shuffled.length - 1; index > 0; index -= 1) {
     const randomIndex = Math.floor(Math.random() * (index + 1))
-    ;[shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]]
+    ;[shuffled[index], shuffled[randomIndex]] = [
+      shuffled[randomIndex],
+      shuffled[index],
+    ]
   }
 
   return shuffled
@@ -53,7 +57,8 @@ function App() {
     localStorage.setItem(MEDALS_STORAGE_KEY, String(includeMedals))
   }, [includeMedals])
 
-  const maxAllowed = BASE_WONDERS.length + (includeMedals ? MEDALS_WONDERS.length : 0)
+  const maxAllowed =
+    BASE_WONDERS.length + (includeMedals ? MEDALS_WONDERS.length : 0)
   const canDraw = players.length >= 2 && players.length <= maxAllowed
 
   function addPlayer(event: FormEvent<HTMLFormElement>) {
@@ -68,7 +73,9 @@ function App() {
   }
 
   function removePlayer(indexToRemove: number) {
-    setPlayers((currentPlayers) => currentPlayers.filter((_, index) => index !== indexToRemove))
+    setPlayers((currentPlayers) =>
+      currentPlayers.filter((_, index) => index !== indexToRemove),
+    )
     setAssignments([])
     triggerHaptic()
   }
@@ -86,7 +93,12 @@ function App() {
       : [...BASE_WONDERS]
     const shuffledWonders = shuffle(wonderPool)
 
-    setAssignments(players.map((player, index) => ({ player, wonder: shuffledWonders[index] })))
+    setAssignments(
+      players.map((player, index) => ({
+        player,
+        wonder: shuffledWonders[index],
+      })),
+    )
     triggerHaptic()
   }
 
@@ -99,16 +111,24 @@ function App() {
 
       <section className="card" aria-labelledby="players-title">
         <div className="card-title">
-          <span id="players-title">Joueurs ({players.length} / {maxAllowed})</span>
+          <span id="players-title">
+            Joueurs ({players.length} / {maxAllowed})
+          </span>
           {players.length > 0 && (
-            <button className="clear-btn" type="button" onClick={clearAllPlayers}>
+            <button
+              className="clear-btn"
+              type="button"
+              onClick={clearAllPlayers}
+            >
               Effacer
             </button>
           )}
         </div>
 
         {players.length >= maxAllowed ? (
-          <div className="limit-reached-badge">Nombre maximum de joueurs atteint ({maxAllowed})</div>
+          <div className="limit-reached-badge">
+            Nombre maximum de joueurs atteint ({maxAllowed})
+          </div>
         ) : (
           <form className="input-row" onSubmit={addPlayer}>
             <input
@@ -127,7 +147,9 @@ function App() {
         )}
 
         <div className="player-list" aria-live="polite">
-          {players.length === 0 && <span className="empty-state">Ajoutez au moins 2 joueurs.</span>}
+          {players.length === 0 && (
+            <span className="empty-state">Ajoutez au moins 2 joueurs.</span>
+          )}
           {players.map((name, index) => (
             <div className="player-chip" key={`${name}-${index}`}>
               <span>{name}</span>
@@ -153,13 +175,23 @@ function App() {
             <strong>Extension Medals</strong>
             <small>+ Rome &amp; Ur (jusqu&apos;a 9)</small>
           </span>
-          <span className={`switch ${includeMedals ? 'active' : ''}`} aria-hidden="true" />
+          <span
+            className={`switch ${includeMedals ? 'active' : ''}`}
+            aria-hidden="true"
+          />
         </button>
       </section>
 
-      <button className="btn-draw" type="button" disabled={!canDraw} onClick={drawWonders}>
+      <button
+        className="btn-draw"
+        type="button"
+        disabled={!canDraw}
+        onClick={drawWonders}
+      >
         <span aria-hidden="true">*</span>
-        <span>{assignments.length > 0 ? 'Re-tirer' : 'Tirer les merveilles'}</span>
+        <span>
+          {assignments.length > 0 ? 'Re-tirer' : 'Tirer les merveilles'}
+        </span>
       </button>
 
       <div className="results-viewport" aria-live="polite">

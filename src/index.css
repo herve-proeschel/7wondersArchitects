@@ -58,7 +58,8 @@ input:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: max(12px, env(safe-area-inset-top)) 0 max(14px, env(safe-area-inset-bottom));
+  padding: max(12px, env(safe-area-inset-top)) 0
+    max(14px, env(safe-area-inset-bottom));
 }
 
 header,
@@ -319,6 +320,12 @@ h1 {
 }
 
 @keyframes pop {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

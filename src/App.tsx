@@ -168,9 +168,7 @@ function App() {
   return (
     <div className="app-screen">
       <header>
-        <h1>
-          7 Wonders
-        </h1>
+        <h1>7 Wonders</h1>
         <p className="subtitle">Assignation des civilisations</p>
       </header>
 

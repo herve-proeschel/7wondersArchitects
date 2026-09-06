@@ -1,4 +1,4 @@
-const CACHE_NAME = '7wonders-architects-v2'
+const CACHE_NAME = '7wonders-architects-v3'
 
 self.addEventListener('install', () => {
   self.skipWaiting()

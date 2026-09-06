@@ -111,7 +111,7 @@ h1 {
 
 .subtitle {
   color: #9c978b;
-  font-size: clamp(1.1rem, 5vw, 2.25rem);
+  font-size: clamp(0.75rem, 3.4vw, 1.5rem);
 }
 
 .card {
@@ -235,6 +235,32 @@ h1 {
 .classic-extension-list {
   display: grid;
   gap: 6px;
+}
+
+.mode-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3px;
+  padding: 3px;
+  background: #121211;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+
+.mode-toggle-button {
+  padding: 7px 10px;
+  color: #9c978b;
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.mode-toggle-button.active {
+  color: #121211;
+  background: #dfb15b;
 }
 
 .extension-heading {

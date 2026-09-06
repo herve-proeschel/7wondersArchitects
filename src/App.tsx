@@ -168,8 +168,10 @@ function App() {
   return (
     <div className="app-screen">
       <header>
-        <h1>7 Wonders Architects</h1>
-        <p className="subtitle">Tirage au sort</p>
+        <h1>
+          7 Wonders
+        </h1>
+        <p className="subtitle">Assignation des civilisations</p>
       </header>
 
       <section className="card" aria-labelledby="players-title">
@@ -233,57 +235,82 @@ function App() {
           role="group"
           aria-label="Mode de jeu"
         >
-          <button
-            className="extension-row"
-            type="button"
-            aria-pressed={mode === 'architects'}
-            onClick={() => setMode('architects')}
-          >
-            <span>
-              <strong>7 Wonders Architects</strong>
-              <small>+ Rome &amp; Ur (jusqu&apos;a 9)</small>
-            </span>
-            <span
-              className={`switch ${mode === 'architects' ? 'active' : ''}`}
-              aria-hidden="true"
-            />
-          </button>
-          <div className="classic-extension-list">
-            <span className="extension-heading">7 Wonders Classic</span>
-            {CLASSIC_PACKS.map((pack) => {
-              const selected =
-                mode === 'classic' && classicPacks.includes(pack.id)
-
-              return (
-                <button
-                  className="extension-row"
-                  type="button"
-                  aria-pressed={selected}
-                  key={pack.id}
-                  onClick={() => {
-                    setMode('classic')
-                    setClassicPacks((currentPacks) =>
-                      currentPacks.includes(pack.id)
-                        ? currentPacks.filter((item) => item !== pack.id)
-                        : [...currentPacks, pack.id],
-                    )
-                  }}
-                >
-                  <span>
-                    <strong>{pack.name}</strong>
-                    <small>
-                      + {pack.wonders.length} merveilles (jusqu&apos;a{' '}
-                      {BASE_WONDERS.length + pack.wonders.length})
-                    </small>
-                  </span>
-                  <span
-                    className={`switch ${selected ? 'active' : ''}`}
-                    aria-hidden="true"
-                  />
-                </button>
-              )
-            })}
+          <div className="mode-toggle" role="tablist" aria-label="Jeu">
+            <button
+              className={`mode-toggle-button ${
+                mode === 'classic' ? 'active' : ''
+              }`}
+              type="button"
+              role="tab"
+              aria-selected={mode === 'classic'}
+              onClick={() => setMode('classic')}
+            >
+              Classic
+            </button>
+            <button
+              className={`mode-toggle-button ${
+                mode === 'architects' ? 'active' : ''
+              }`}
+              type="button"
+              role="tab"
+              aria-selected={mode === 'architects'}
+              onClick={() => setMode('architects')}
+            >
+              Architects
+            </button>
           </div>
+
+          {mode === 'architects' ? (
+            <div className="classic-extension-list">
+              <button
+                className="extension-row"
+                type="button"
+                aria-pressed="true"
+              >
+                <span>
+                  <strong>Medals</strong>
+                  <small>+ Rome &amp; Ur (jusqu&apos;a 9)</small>
+                </span>
+                <span className="switch active" aria-hidden="true" />
+              </button>
+            </div>
+          ) : (
+            <div className="classic-extension-list">
+              {CLASSIC_PACKS.map((pack) => {
+                const selected =
+                  mode === 'classic' && classicPacks.includes(pack.id)
+
+                return (
+                  <button
+                    className="extension-row"
+                    type="button"
+                    aria-pressed={selected}
+                    key={pack.id}
+                    onClick={() => {
+                      setMode('classic')
+                      setClassicPacks((currentPacks) =>
+                        currentPacks.includes(pack.id)
+                          ? currentPacks.filter((item) => item !== pack.id)
+                          : [...currentPacks, pack.id],
+                      )
+                    }}
+                  >
+                    <span>
+                      <strong>{pack.name}</strong>
+                      <small>
+                        + {pack.wonders.length} merveilles (jusqu&apos;a{' '}
+                        {BASE_WONDERS.length + pack.wonders.length})
+                      </small>
+                    </span>
+                    <span
+                      className={`switch ${selected ? 'active' : ''}`}
+                      aria-hidden="true"
+                    />
+                  </button>
+                )
+              })}
+            </div>
+          )}
         </div>
       </section>
 

@@ -208,7 +208,9 @@ function App() {
   const [assignments, setAssignments] = useState<Assignment[]>([])
   const [firstPlayerIndex, setFirstPlayerIndex] = useState<number | null>(null)
   const [language, setLanguage] = useState<Language>(readSavedLanguage)
+  const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false)
   const t = translations[language]
+  const selectedLanguage = LANGUAGES.find((item) => item.code === language)
 
   useEffect(() => {
     writeStorage(PLAYERS_STORAGE_KEY, JSON.stringify(players))
@@ -290,20 +292,50 @@ function App() {
       <header>
         <div className="header-row">
           <h1>7 Wonders</h1>
-          <label className="language-picker">
-            <span className="visually-hidden">{t.language}</span>
-            <select
-              value={language}
+          <div className="language-picker">
+            <button
+              className="language-button"
+              type="button"
               aria-label={t.language}
-              onChange={(event) => setLanguage(event.target.value as Language)}
+              aria-haspopup="listbox"
+              aria-expanded={isLanguageMenuOpen}
+              onClick={() => setIsLanguageMenuOpen((isOpen) => !isOpen)}
             >
-              {LANGUAGES.map((item) => (
-                <option key={item.code} value={item.code}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
-          </label>
+              <span aria-hidden="true">{selectedLanguage?.flag}</span>
+              <span className="language-code" aria-hidden="true">
+                {selectedLanguage?.label}
+              </span>
+              <span className="language-chevron" aria-hidden="true">
+                ▾
+              </span>
+            </button>
+            {isLanguageMenuOpen && (
+              <div
+                className="language-menu"
+                role="listbox"
+                aria-label={t.language}
+              >
+                {LANGUAGES.map((item) => (
+                  <button
+                    className={`language-option ${
+                      item.code === language ? 'selected' : ''
+                    }`}
+                    key={item.code}
+                    type="button"
+                    role="option"
+                    aria-selected={item.code === language}
+                    onClick={() => {
+                      setLanguage(item.code)
+                      setIsLanguageMenuOpen(false)
+                    }}
+                  >
+                    <span aria-hidden="true">{item.flag}</span>
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
         <p className="subtitle">{t.subtitle}</p>
       </header>

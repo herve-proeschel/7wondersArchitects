@@ -40,12 +40,12 @@ export type Assignment = {
 
 export type Language = 'fr' | 'en' | 'de' | 'it' | 'es'
 
-export const LANGUAGES: { code: Language; label: string }[] = [
-  { code: 'fr', label: 'FR' },
-  { code: 'en', label: 'EN' },
-  { code: 'de', label: 'DE' },
-  { code: 'it', label: 'IT' },
-  { code: 'es', label: 'ES' },
+export const LANGUAGES: { code: Language; label: string; flag: string }[] = [
+  { code: 'fr', label: 'FR', flag: '🇫🇷' },
+  { code: 'en', label: 'EN', flag: '🇬🇧' },
+  { code: 'de', label: 'DE', flag: '🇩🇪' },
+  { code: 'it', label: 'IT', flag: '🇮🇹' },
+  { code: 'es', label: 'ES', flag: '🇪🇸' },
 ]
 
 export const WONDER_NAMES: Record<Wonder, Record<Language, string>> = {

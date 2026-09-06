@@ -113,17 +113,67 @@ header {
   position: absolute;
   right: 0;
   top: 50%;
+  z-index: 3;
+  display: block;
   transform: translateY(-50%);
 }
 
-.language-picker select {
-  padding: 5px 6px;
-  color: #dfb15b;
+.language-button {
+  display: flex;
+  min-width: 60px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 5px 7px;
+  color: #f5f5f5;
   background: #1e1d1a;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 7px;
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.language-code {
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.language-chevron {
+  color: #dfb15b;
+  font-size: 0.7rem;
+}
+
+.language-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 2;
+  display: grid;
+  min-width: 82px;
+  gap: 2px;
+  padding: 4px;
+  background: #1e1d1a;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #dfb15b;
+  padding: 7px 8px;
+  background: transparent;
+  border: 0;
   font-size: 0.75rem;
   font-weight: 700;
+}
+
+.language-option:hover,
+.language-option.selected {
+  color: #121211;
+  background: #dfb15b;
 }
 
 .visually-hidden {

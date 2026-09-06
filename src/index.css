@@ -102,6 +102,39 @@ header {
   text-align: center;
 }
 
+.header-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.language-picker {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.language-picker select {
+  padding: 5px 6px;
+  color: #dfb15b;
+  background: #1e1d1a;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 7px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 h1 {
   color: #dfb15b;
   font-size: clamp(2rem, 8vw, 3.6rem);

@@ -3,15 +3,128 @@ import {
   Assignment,
   BASE_WONDERS,
   CLASSIC_PACKS,
+  Language,
+  LANGUAGES,
   MEDALS_WONDERS,
   Wonder,
+  WONDER_NAMES,
 } from './wonders'
 
 const PLAYERS_STORAGE_KEY = '7w_players_fs'
 const MODE_STORAGE_KEY = '7w_mode_fs'
 const CLASSIC_PACKS_STORAGE_KEY = '7w_classic_packs_fs'
+const LANGUAGE_STORAGE_KEY = '7w_language_fs'
 
 type GameMode = 'architects' | 'classic'
+
+const translations = {
+  fr: {
+    subtitle: 'Assignation des civilisations',
+    players: 'Joueurs',
+    clear: 'Effacer',
+    add: 'Ajouter un joueur...',
+    playerName: 'Nom du joueur',
+    empty: 'Ajoutez au moins 2 joueurs.',
+    mode: 'Mode de jeu',
+    game: 'Jeu',
+    medals: 'Medals',
+    wonders: 'merveilles',
+    upTo: "jusqu'a",
+    drawAgain: 'Re-tirer',
+    draw: 'Tirer les merveilles',
+    first: 'Premier joueur',
+    max: 'Nombre maximum de joueurs atteint',
+    addPlayer: 'Ajouter',
+    language: 'Langue',
+  },
+  en: {
+    subtitle: 'Civilization assignment',
+    players: 'Players',
+    clear: 'Clear',
+    add: 'Add a player...',
+    playerName: 'Player name',
+    empty: 'Add at least 2 players.',
+    mode: 'Game mode',
+    game: 'Game',
+    medals: 'Medals',
+    wonders: 'wonders',
+    upTo: 'up to',
+    drawAgain: 'Draw again',
+    draw: 'Draw wonders',
+    first: 'First player',
+    max: 'Maximum number of players reached',
+    addPlayer: 'Add',
+    language: 'Language',
+  },
+  de: {
+    subtitle: 'Zivilisationszuweisung',
+    players: 'Spieler',
+    clear: 'Löschen',
+    add: 'Spieler hinzufügen...',
+    playerName: 'Spielername',
+    empty: 'Füge mindestens 2 Spieler hinzu.',
+    mode: 'Spielmodus',
+    game: 'Spiel',
+    medals: 'Medals',
+    wonders: 'Wunder',
+    upTo: 'bis zu',
+    drawAgain: 'Neu ziehen',
+    draw: 'Wunder ziehen',
+    first: 'Erster Spieler',
+    max: 'Maximale Spielerzahl erreicht',
+    addPlayer: 'Hinzufügen',
+    language: 'Sprache',
+  },
+  it: {
+    subtitle: 'Assegnazione delle civiltà',
+    players: 'Giocatori',
+    clear: 'Cancella',
+    add: 'Aggiungi un giocatore...',
+    playerName: 'Nome del giocatore',
+    empty: 'Aggiungi almeno 2 giocatori.',
+    mode: 'Modalità di gioco',
+    game: 'Gioco',
+    medals: 'Medals',
+    wonders: 'meraviglie',
+    upTo: 'fino a',
+    drawAgain: 'Pesca di nuovo',
+    draw: 'Pesca le meraviglie',
+    first: 'Primo giocatore',
+    max: 'Numero massimo di giocatori raggiunto',
+    addPlayer: 'Aggiungi',
+    language: 'Lingua',
+  },
+  es: {
+    subtitle: 'Asignación de civilizaciones',
+    players: 'Jugadores',
+    clear: 'Borrar',
+    add: 'Añadir un jugador...',
+    playerName: 'Nombre del jugador',
+    empty: 'Añade al menos 2 jugadores.',
+    mode: 'Modo de juego',
+    game: 'Juego',
+    medals: 'Medals',
+    wonders: 'maravillas',
+    upTo: 'hasta',
+    drawAgain: 'Volver a sortear',
+    draw: 'Sortear maravillas',
+    first: 'Primer jugador',
+    max: 'Se ha alcanzado el máximo de jugadores',
+    addPlayer: 'Añadir',
+    language: 'Idioma',
+  },
+} satisfies Record<Language, Record<string, string>>
+
+function readSavedLanguage(): Language {
+  const saved = readStorage(LANGUAGE_STORAGE_KEY)
+  if (saved && LANGUAGES.some((language) => language.code === saved))
+    return saved as Language
+  const locale =
+    typeof navigator === 'undefined' ? '' : navigator.language.toLowerCase()
+  return LANGUAGES.some((language) => locale.startsWith(language.code))
+    ? (locale.slice(0, 2) as Language)
+    : 'en'
+}
 
 function readStorage(key: string): string | null {
   try {
@@ -94,6 +207,8 @@ function App() {
   )
   const [assignments, setAssignments] = useState<Assignment[]>([])
   const [firstPlayerIndex, setFirstPlayerIndex] = useState<number | null>(null)
+  const [language, setLanguage] = useState<Language>(readSavedLanguage)
+  const t = translations[language]
 
   useEffect(() => {
     writeStorage(PLAYERS_STORAGE_KEY, JSON.stringify(players))
@@ -106,6 +221,11 @@ function App() {
   useEffect(() => {
     writeStorage(CLASSIC_PACKS_STORAGE_KEY, JSON.stringify(classicPacks))
   }, [classicPacks])
+
+  useEffect(() => {
+    writeStorage(LANGUAGE_STORAGE_KEY, language)
+    document.documentElement.lang = language
+  }, [language])
 
   const maxAllowed =
     BASE_WONDERS.length +
@@ -168,14 +288,30 @@ function App() {
   return (
     <div className="app-screen">
       <header>
-        <h1>7 Wonders</h1>
-        <p className="subtitle">Assignation des civilisations</p>
+        <div className="header-row">
+          <h1>7 Wonders</h1>
+          <label className="language-picker">
+            <span className="visually-hidden">{t.language}</span>
+            <select
+              value={language}
+              aria-label={t.language}
+              onChange={(event) => setLanguage(event.target.value as Language)}
+            >
+              {LANGUAGES.map((item) => (
+                <option key={item.code} value={item.code}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <p className="subtitle">{t.subtitle}</p>
       </header>
 
       <section className="card" aria-labelledby="players-title">
         <div className="card-title">
           <span id="players-title">
-            Joueurs ({players.length} / {maxAllowed})
+            {t.players} ({players.length} / {maxAllowed})
           </span>
           {players.length > 0 && (
             <button
@@ -183,27 +319,27 @@ function App() {
               type="button"
               onClick={clearAllPlayers}
             >
-              Effacer
+              {t.clear}
             </button>
           )}
         </div>
 
         {players.length >= maxAllowed ? (
           <div className="limit-reached-badge">
-            Nombre maximum de joueurs atteint ({maxAllowed})
+            {t.max} ({maxAllowed})
           </div>
         ) : (
           <form className="input-row" onSubmit={addPlayer}>
             <input
               type="text"
               className="text-input"
-              placeholder="Ajouter un joueur..."
+              placeholder={t.add}
               value={nameInput}
               onChange={(event) => setNameInput(event.target.value)}
               maxLength={20}
-              aria-label="Nom du joueur"
+              aria-label={t.playerName}
             />
-            <button type="submit" className="btn-add" aria-label="Ajouter">
+            <button type="submit" className="btn-add" aria-label={t.addPlayer}>
               +
             </button>
           </form>
@@ -211,7 +347,7 @@ function App() {
 
         <div className="player-list" aria-live="polite">
           {players.length === 0 && (
-            <span className="empty-state">Ajoutez au moins 2 joueurs.</span>
+            <span className="empty-state">{t.empty}</span>
           )}
           {players.map((name, index) => (
             <div className="player-chip" key={`${name}-${index}`}>
@@ -228,12 +364,8 @@ function App() {
           ))}
         </div>
 
-        <div
-          className="extension-choices"
-          role="group"
-          aria-label="Mode de jeu"
-        >
-          <div className="mode-toggle" role="tablist" aria-label="Jeu">
+        <div className="extension-choices" role="group" aria-label={t.mode}>
+          <div className="mode-toggle" role="tablist" aria-label={t.game}>
             <button
               className={`mode-toggle-button ${
                 mode === 'classic' ? 'active' : ''
@@ -267,7 +399,10 @@ function App() {
               >
                 <span>
                   <strong>Medals</strong>
-                  <small>+ Rome &amp; Ur (jusqu&apos;a 9)</small>
+                  <small>
+                    + {WONDER_NAMES.rome[language]} &amp;{' '}
+                    {WONDER_NAMES.ur[language]} ({t.upTo} 9)
+                  </small>
                 </span>
                 <span className="switch active" aria-hidden="true" />
               </button>
@@ -294,9 +429,11 @@ function App() {
                     }}
                   >
                     <span>
-                      <strong>{pack.name}</strong>
+                      <strong>
+                        {pack.id === 'cities' ? 'Cities' : 'Wonder Pack'}
+                      </strong>
                       <small>
-                        + {pack.wonders.length} merveilles (jusqu&apos;a{' '}
+                        + {pack.wonders.length} {t.wonders} ({t.upTo}{' '}
                         {BASE_WONDERS.length + pack.wonders.length})
                       </small>
                     </span>
@@ -319,9 +456,7 @@ function App() {
         onClick={drawWonders}
       >
         <span aria-hidden="true">*</span>
-        <span>
-          {assignments.length > 0 ? 'Re-tirer' : 'Tirer les merveilles'}
-        </span>
+        <span>{assignments.length > 0 ? t.drawAgain : t.draw}</span>
       </button>
 
       <div className="results-viewport" aria-live="polite">
@@ -329,13 +464,15 @@ function App() {
           <div className="result-card" key={`${assignment.player}-${index}`}>
             <span className="res-player">
               {index === firstPlayerIndex && (
-                <span className="first-player-flag" aria-label="Premier joueur">
+                <span className="first-player-flag" aria-label={t.first}>
                   ⚑
                 </span>
               )}
               {assignment.player}
             </span>
-            <span className="res-wonder">{assignment.wonder}</span>
+            <span className="res-wonder">
+              {WONDER_NAMES[assignment.wonder][language]}
+            </span>
           </div>
         ))}
       </div>

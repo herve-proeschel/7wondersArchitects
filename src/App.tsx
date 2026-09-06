@@ -1,11 +1,36 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { Assignment, BASE_WONDERS, MEDALS_WONDERS, Wonder } from './wonders'
+import {
+  Assignment,
+  BASE_WONDERS,
+  CLASSIC_PACKS,
+  MEDALS_WONDERS,
+  Wonder,
+} from './wonders'
 
 const PLAYERS_STORAGE_KEY = '7w_players_fs'
-const MEDALS_STORAGE_KEY = '7w_medals_fs'
+const MODE_STORAGE_KEY = '7w_mode_fs'
+const CLASSIC_PACKS_STORAGE_KEY = '7w_classic_packs_fs'
+
+type GameMode = 'architects' | 'classic'
+
+function readStorage(key: string): string | null {
+  try {
+    return localStorage.getItem(key)
+  } catch {
+    return null
+  }
+}
+
+function writeStorage(key: string, value: string) {
+  try {
+    localStorage.setItem(key, value)
+  } catch {
+    return
+  }
+}
 
 function readSavedPlayers(): string[] {
-  const saved = localStorage.getItem(PLAYERS_STORAGE_KEY)
+  const saved = readStorage(PLAYERS_STORAGE_KEY)
 
   if (!saved) return []
 
@@ -20,9 +45,26 @@ function readSavedPlayers(): string[] {
   }
 }
 
-function readSavedMedals(): boolean {
-  const saved = localStorage.getItem(MEDALS_STORAGE_KEY)
-  return saved === null ? true : saved === 'true'
+function readSavedMode(): GameMode {
+  return readStorage(MODE_STORAGE_KEY) === 'classic' ? 'classic' : 'architects'
+}
+
+function readSavedClassicPacks(): string[] {
+  const saved = readStorage(CLASSIC_PACKS_STORAGE_KEY)
+
+  if (!saved) return CLASSIC_PACKS.map((pack) => pack.id)
+
+  try {
+    const packs = JSON.parse(saved)
+    return Array.isArray(packs) &&
+      packs.every((pack) =>
+        CLASSIC_PACKS.some((classicPack) => classicPack.id === pack),
+      )
+      ? packs
+      : CLASSIC_PACKS.map((pack) => pack.id)
+  } catch {
+    return CLASSIC_PACKS.map((pack) => pack.id)
+  }
 }
 
 function triggerHaptic() {
@@ -46,20 +88,33 @@ function shuffle<T>(items: T[]): T[] {
 function App() {
   const [players, setPlayers] = useState<string[]>(readSavedPlayers)
   const [nameInput, setNameInput] = useState('')
-  const [includeMedals, setIncludeMedals] = useState(readSavedMedals)
+  const [mode, setMode] = useState<GameMode>(readSavedMode)
+  const [classicPacks, setClassicPacks] = useState<string[]>(
+    readSavedClassicPacks,
+  )
   const [assignments, setAssignments] = useState<Assignment[]>([])
   const [firstPlayerIndex, setFirstPlayerIndex] = useState<number | null>(null)
 
   useEffect(() => {
-    localStorage.setItem(PLAYERS_STORAGE_KEY, JSON.stringify(players))
+    writeStorage(PLAYERS_STORAGE_KEY, JSON.stringify(players))
   }, [players])
 
   useEffect(() => {
-    localStorage.setItem(MEDALS_STORAGE_KEY, String(includeMedals))
-  }, [includeMedals])
+    writeStorage(MODE_STORAGE_KEY, mode)
+  }, [mode])
+
+  useEffect(() => {
+    writeStorage(CLASSIC_PACKS_STORAGE_KEY, JSON.stringify(classicPacks))
+  }, [classicPacks])
 
   const maxAllowed =
-    BASE_WONDERS.length + (includeMedals ? MEDALS_WONDERS.length : 0)
+    BASE_WONDERS.length +
+    (mode === 'architects'
+      ? MEDALS_WONDERS.length
+      : CLASSIC_PACKS.filter((pack) => classicPacks.includes(pack.id)).reduce(
+          (total, pack) => total + pack.wonders.length,
+          0,
+        ))
   const canDraw = players.length >= 2 && players.length <= maxAllowed
 
   function addPlayer(event: FormEvent<HTMLFormElement>) {
@@ -91,9 +146,13 @@ function App() {
   function drawWonders() {
     if (!canDraw) return
 
-    const wonderPool: Wonder[] = includeMedals
-      ? [...BASE_WONDERS, ...MEDALS_WONDERS]
-      : [...BASE_WONDERS]
+    const extensionWonders =
+      mode === 'architects'
+        ? MEDALS_WONDERS
+        : CLASSIC_PACKS.filter((pack) =>
+            classicPacks.includes(pack.id),
+          ).flatMap((pack) => pack.wonders)
+    const wonderPool: Wonder[] = [...BASE_WONDERS, ...extensionWonders]
     const shuffledWonders = shuffle(wonderPool)
 
     setAssignments(
@@ -109,8 +168,10 @@ function App() {
   return (
     <div className="app-screen">
       <header>
-        <h1>7 Wonders Architects</h1>
-        <p className="subtitle">Tirage au sort</p>
+        <h1>
+          7 Wonders
+        </h1>
+        <p className="subtitle">Assignation des civilisations</p>
       </header>
 
       <section className="card" aria-labelledby="players-title">
@@ -169,21 +230,88 @@ function App() {
           ))}
         </div>
 
-        <button
-          className="extension-row"
-          type="button"
-          aria-pressed={includeMedals}
-          onClick={() => setIncludeMedals((enabled) => !enabled)}
+        <div
+          className="extension-choices"
+          role="group"
+          aria-label="Mode de jeu"
         >
-          <span>
-            <strong>Extension Medals</strong>
-            <small>+ Rome &amp; Ur (jusqu&apos;a 9)</small>
-          </span>
-          <span
-            className={`switch ${includeMedals ? 'active' : ''}`}
-            aria-hidden="true"
-          />
-        </button>
+          <div className="mode-toggle" role="tablist" aria-label="Jeu">
+            <button
+              className={`mode-toggle-button ${
+                mode === 'classic' ? 'active' : ''
+              }`}
+              type="button"
+              role="tab"
+              aria-selected={mode === 'classic'}
+              onClick={() => setMode('classic')}
+            >
+              Classic
+            </button>
+            <button
+              className={`mode-toggle-button ${
+                mode === 'architects' ? 'active' : ''
+              }`}
+              type="button"
+              role="tab"
+              aria-selected={mode === 'architects'}
+              onClick={() => setMode('architects')}
+            >
+              Architects
+            </button>
+          </div>
+
+          {mode === 'architects' ? (
+            <div className="classic-extension-list">
+              <button
+                className="extension-row"
+                type="button"
+                aria-pressed="true"
+              >
+                <span>
+                  <strong>Medals</strong>
+                  <small>+ Rome &amp; Ur (jusqu&apos;a 9)</small>
+                </span>
+                <span className="switch active" aria-hidden="true" />
+              </button>
+            </div>
+          ) : (
+            <div className="classic-extension-list">
+              {CLASSIC_PACKS.map((pack) => {
+                const selected =
+                  mode === 'classic' && classicPacks.includes(pack.id)
+
+                return (
+                  <button
+                    className="extension-row"
+                    type="button"
+                    aria-pressed={selected}
+                    key={pack.id}
+                    onClick={() => {
+                      setMode('classic')
+                      setClassicPacks((currentPacks) =>
+                        currentPacks.includes(pack.id)
+                          ? currentPacks.filter((item) => item !== pack.id)
+                          : [...currentPacks, pack.id],
+                      )
+                    }}
+                  >
+                    <span>
+                      <strong>{pack.name}</strong>
+                      <small>
+                        + {pack.wonders.length} merveilles (jusqu&apos;a{' '}
+                        {BASE_WONDERS.length + pack.wonders.length})
+                      </small>
+                    </span>
+                    <span
+                      className={`switch ${selected ? 'active' : ''}`}
+                      aria-hidden="true"
+                    />
+                  </button>
+                )
+              })}
+            </div>
+          )}
+        </div>
       </section>
 
       <button

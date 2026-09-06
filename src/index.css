@@ -62,6 +62,34 @@ input:focus-visible {
     max(14px, env(safe-area-inset-bottom));
 }
 
+.error-screen {
+  display: grid;
+  min-height: 100%;
+  place-content: center;
+  gap: 12px;
+  padding: 24px;
+  color: #f5f5f5;
+  text-align: center;
+}
+
+.error-screen h1 {
+  font-size: 1.5rem;
+}
+
+.error-screen p {
+  color: #dfb15b;
+  overflow-wrap: anywhere;
+}
+
+.error-screen button {
+  padding: 10px 14px;
+  color: #121211;
+  background: #dfb15b;
+  border: 0;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
 header,
 .btn-draw,
 .results-viewport {
@@ -83,7 +111,7 @@ h1 {
 
 .subtitle {
   color: #9c978b;
-  font-size: clamp(1.1rem, 5vw, 2.25rem);
+  font-size: clamp(0.75rem, 3.4vw, 1.5rem);
 }
 
 .card {
@@ -197,6 +225,49 @@ h1 {
   background: #121211;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 10px;
+}
+
+.extension-choices {
+  display: grid;
+  gap: 8px;
+}
+
+.classic-extension-list {
+  display: grid;
+  gap: 6px;
+}
+
+.mode-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3px;
+  padding: 3px;
+  background: #121211;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+
+.mode-toggle-button {
+  padding: 7px 10px;
+  color: #9c978b;
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.mode-toggle-button.active {
+  color: #121211;
+  background: #dfb15b;
+}
+
+.extension-heading {
+  color: #9c978b;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .extension-row span:first-child {

@@ -236,7 +236,7 @@ function App() {
   }, [language])
   
   useEffect(() => {
-    writeStorage(MEDALS_STORAGE_KEY, medalsEnabled)
+    writeStorage(MEDALS_STORAGE_KEY, String(medalsEnabled))
   }, [medalsEnabled])
 
   const maxAllowed =

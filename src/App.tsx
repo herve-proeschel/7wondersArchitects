@@ -35,6 +35,7 @@ const translations = {
     draw: 'Tirer les merveilles',
     first: 'Premier joueur',
     max: 'Nombre maximum de joueurs atteint',
+    overMax: 'Le nombre de joueurs dépasse le maximum autorisé',
     addPlayer: 'Ajouter',
     language: 'Langue',
   },
@@ -54,6 +55,7 @@ const translations = {
     draw: 'Draw wonders',
     first: 'First player',
     max: 'Maximum number of players reached',
+    overMax: 'The number of players exceeds the allowed maximum',
     addPlayer: 'Add',
     language: 'Language',
   },
@@ -73,6 +75,7 @@ const translations = {
     draw: 'Wunder ziehen',
     first: 'Erster Spieler',
     max: 'Maximale Spielerzahl erreicht',
+    overMax: 'Die Spielerzahl überschreitet das erlaubte Maximum',
     addPlayer: 'Hinzufügen',
     language: 'Sprache',
   },
@@ -92,6 +95,7 @@ const translations = {
     draw: 'Pesca le meraviglie',
     first: 'Primo giocatore',
     max: 'Numero massimo di giocatori raggiunto',
+    overMax: 'Il numero di giocatori supera il massimo consentito',
     addPlayer: 'Aggiungi',
     language: 'Lingua',
   },
@@ -111,6 +115,7 @@ const translations = {
     draw: 'Sortear maravillas',
     first: 'Primer jugador',
     max: 'Se ha alcanzado el máximo de jugadores',
+    overMax: 'El número de jugadores supera el máximo permitido',
     addPlayer: 'Añadir',
     language: 'Idioma',
   },
@@ -370,7 +375,11 @@ function App() {
           )}
         </div>
 
-        {players.length >= maxAllowed ? (
+        {players.length > maxAllowed ? (
+          <div className="limit-reached-badge">
+            {t.overMax} ({maxAllowed})
+          </div>
+        ) : players.length === maxAllowed ? (
           <div className="limit-reached-badge">
             {t.max} ({maxAllowed})
           </div>

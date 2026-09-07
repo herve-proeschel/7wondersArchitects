@@ -521,3 +521,32 @@ h1 {
     transform: translateY(0);
   }
 }
+
+@media (orientation: landscape) {
+  .app-screen {
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
+    align-content: start;
+  }
+
+  header {
+    grid-column: 1 / -1;
+  }
+
+  .card {
+    grid-column: 1;
+  }
+
+  .btn-draw {
+    grid-column: 1;
+    align-self: start;
+  }
+
+  .results-viewport {
+    grid-column: 2;
+    grid-row: 2 / 4;
+    align-self: stretch;
+  }
+}

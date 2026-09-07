@@ -531,6 +531,14 @@ h1 {
     align-content: start;
   }
 
+  h1 {
+    font-size: clamp(1rem, 4vw, 1.8rem);
+  }
+
+  .subtitle {
+    font-size: clamp(0.375rem, 1.7vw, 0.75rem);
+  }
+
   header {
     grid-column: 1 / -1;
   }

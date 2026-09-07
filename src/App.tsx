@@ -14,6 +14,7 @@ const PLAYERS_STORAGE_KEY = '7w_players_fs'
 const MODE_STORAGE_KEY = '7w_mode_fs'
 const CLASSIC_PACKS_STORAGE_KEY = '7w_classic_packs_fs'
 const LANGUAGE_STORAGE_KEY = '7w_language_fs'
+const MEDALS_STORAGE_KEY = '7w_medals_fs'
 
 type GameMode = 'architects' | 'classic'
 
@@ -180,6 +181,10 @@ function readSavedClassicPacks(): string[] {
   }
 }
 
+function readSavedMedals(): boolean {
+  return readStorage(MEDALS_STORAGE_KEY) !== 'false'
+}
+
 function triggerHaptic() {
   if ('vibrate' in navigator) navigator.vibrate(20)
 }
@@ -205,6 +210,7 @@ function App() {
   const [classicPacks, setClassicPacks] = useState<string[]>(
     readSavedClassicPacks,
   )
+  const [medalsEnabled, setMedalsEnabled] = useState(readSavedMedals)
   const [assignments, setAssignments] = useState<Assignment[]>([])
   const [firstPlayerIndex, setFirstPlayerIndex] = useState<number | null>(null)
   const [language, setLanguage] = useState<Language>(readSavedLanguage)
@@ -228,11 +234,17 @@ function App() {
     writeStorage(LANGUAGE_STORAGE_KEY, language)
     document.documentElement.lang = language
   }, [language])
+  
+  useEffect(() => {
+    writeStorage(MEDALS_STORAGE_KEY, medalsEnabled)
+  }, [medalsEnabled])
 
   const maxAllowed =
     BASE_WONDERS.length +
-    (mode === 'architects'
+    (mode === 'architects' && medalsEnabled
       ? MEDALS_WONDERS.length
+      : mode === 'architects'
+      ? 0
       : CLASSIC_PACKS.filter((pack) => classicPacks.includes(pack.id)).reduce(
           (total, pack) => total + pack.wonders.length,
           0,
@@ -269,8 +281,10 @@ function App() {
     if (!canDraw) return
 
     const extensionWonders =
-      mode === 'architects'
+      mode === 'architects' && medalsEnabled
         ? MEDALS_WONDERS
+        : mode === 'architects'
+        ? []
         : CLASSIC_PACKS.filter((pack) =>
             classicPacks.includes(pack.id),
           ).flatMap((pack) => pack.wonders)
@@ -427,16 +441,22 @@ function App() {
               <button
                 className="extension-row"
                 type="button"
-                aria-pressed="true"
+                aria-pressed={medalsEnabled}
+                onClick={() => setMedalsEnabled((enabled) => !enabled)}
               >
                 <span>
                   <strong>Medals</strong>
                   <small>
                     + {WONDER_NAMES.rome[language]} &amp;{' '}
                     {WONDER_NAMES.ur[language]} ({t.upTo} 9)
+                    + Rome &amp; Ur (jusqu&apos;a{' '}
+                    {BASE_WONDERS.length + MEDALS_WONDERS.length})
                   </small>
                 </span>
-                <span className="switch active" aria-hidden="true" />
+                <span
+                  className={`switch ${medalsEnabled ? 'active' : ''}`}
+                  aria-hidden="true"
+                />
               </button>
             </div>
           ) : (

@@ -522,6 +522,12 @@ h1 {
   }
 }
 
+@media (orientation: portrait) {
+  .app-screen {
+    overflow-y: auto;
+  }
+}
+
 @media (orientation: landscape) {
   .app-screen {
     max-width: 1200px;

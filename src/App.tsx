@@ -234,7 +234,7 @@ function App() {
     writeStorage(LANGUAGE_STORAGE_KEY, language)
     document.documentElement.lang = language
   }, [language])
-  
+
   useEffect(() => {
     writeStorage(MEDALS_STORAGE_KEY, String(medalsEnabled))
   }, [medalsEnabled])
@@ -448,9 +448,8 @@ function App() {
                   <strong>Medals</strong>
                   <small>
                     + {WONDER_NAMES.rome[language]} &amp;{' '}
-                    {WONDER_NAMES.ur[language]} ({t.upTo} 9)
-                    + Rome &amp; Ur (jusqu&apos;a{' '}
-                    {BASE_WONDERS.length + MEDALS_WONDERS.length})
+                    {WONDER_NAMES.ur[language]} ({t.upTo} 9) + Rome &amp; Ur
+                    (jusqu&apos;a {BASE_WONDERS.length + MEDALS_WONDERS.length})
                   </small>
                 </span>
                 <span

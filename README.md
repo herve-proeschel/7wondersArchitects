@@ -106,15 +106,23 @@ Configure the host to serve `index.html` for the application entry point and all
 
 ```text
 .
-├── public/              Static PWA files and service worker
+├── public/              Static PWA files, manifest, and service worker
 ├── src/
+│   ├── components/      Reusable UI components for players, modes, packs, and results
+│   ├── context/         React context providers, including language state
 │   ├── App.tsx          Main application UI and game interactions
 │   ├── index.css        Application styles
 │   ├── main.tsx         React entry point and service-worker registration
-│   └── wonders.ts       Wonder data, packs, and translations metadata
+│   ├── storage.ts       Browser localStorage persistence helpers
+│   ├── translations.ts  UI translations for supported languages
+│   ├── types.ts         Shared TypeScript types
+│   ├── vite-env.d.ts    Vite client type declarations
+│   └── wonders.ts       Wonder data, packs, and language metadata
+├── .github/             GitHub Actions workflow for validation and deployment
 ├── index.html           HTML entry point
-├── vite.config.ts       Vite configuration and configurable base path
-└── package.json         Scripts and dependencies
+├── package.json         Scripts and dependencies
+├── tsconfig*.json       TypeScript configuration
+└── vite.config.ts       Vite configuration and configurable base path
 ```
 
 ## Data and Privacy
@@ -123,4 +131,4 @@ The application does not use a backend. Saved settings and player names remain i
 
 ## License
 
-No license has been specified for this project yet.
+This project is licensed under the [MIT License](LICENSE).

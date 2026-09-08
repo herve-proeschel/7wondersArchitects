@@ -532,8 +532,8 @@ h1 {
   .app-screen {
     max-width: 1200px;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
     align-content: start;
   }
 
@@ -551,16 +551,28 @@ h1 {
 
   .card {
     grid-column: 1;
+    grid-row: 2;
+    min-height: 0;
+    overflow-y: auto;
   }
 
   .btn-draw {
-    grid-column: 1;
-    align-self: start;
+    grid-column: 2;
+    grid-row: 2;
+    align-self: stretch;
+    flex-direction: row;
+    min-width: 32px;
+    padding: 16px 5px;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    text-align: center;
+    white-space: nowrap;
   }
 
   .results-viewport {
-    grid-column: 2;
-    grid-row: 2 / 4;
+    grid-column: 3;
+    grid-row: 2;
     align-self: stretch;
   }
 }

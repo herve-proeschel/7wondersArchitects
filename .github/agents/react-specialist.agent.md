@@ -1,7 +1,7 @@
 ---
 name: react-specialist
 description: Senior React and frontend architecture specialist for UI components, state management, and performance.
-model: gpt-4o
+model: gpt-5.6-luna
 tools:
   - read
   - edit

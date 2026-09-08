@@ -102,3 +102,5 @@ export const translations = {
     language: 'Idioma',
   },
 } satisfies Record<Language, Record<string, string>>
+
+export type Translation = (typeof translations)[Language]

@@ -3,90 +3,25 @@ import {
   Assignment,
   BASE_WONDERS,
   CLASSIC_PACKS,
-  Language,
-  LANGUAGES,
   MEDALS_WONDERS,
   Wonder,
-  WONDER_NAMES,
 } from './wonders'
-import { translations } from './translations'
-
-const PLAYERS_STORAGE_KEY = '7w_players_fs'
-const MODE_STORAGE_KEY = '7w_mode_fs'
-const CLASSIC_PACKS_STORAGE_KEY = '7w_classic_packs_fs'
-const LANGUAGE_STORAGE_KEY = '7w_language_fs'
-const MEDALS_STORAGE_KEY = '7w_medals_fs'
-
-type GameMode = 'architects' | 'classic'
-
-function readSavedLanguage(): Language {
-  const saved = readStorage(LANGUAGE_STORAGE_KEY)
-  if (saved && LANGUAGES.some((language) => language.code === saved))
-    return saved as Language
-  const locale =
-    typeof navigator === 'undefined' ? '' : navigator.language.toLowerCase()
-  return LANGUAGES.some((language) => locale.startsWith(language.code))
-    ? (locale.slice(0, 2) as Language)
-    : 'en'
-}
-
-function readStorage(key: string): string | null {
-  try {
-    return localStorage.getItem(key)
-  } catch {
-    return null
-  }
-}
-
-function writeStorage(key: string, value: string) {
-  try {
-    localStorage.setItem(key, value)
-  } catch {
-    return
-  }
-}
-
-function readSavedPlayers(): string[] {
-  const saved = readStorage(PLAYERS_STORAGE_KEY)
-
-  if (!saved) return []
-
-  try {
-    const players = JSON.parse(saved)
-    return Array.isArray(players) &&
-      players.every((player) => typeof player === 'string')
-      ? players
-      : []
-  } catch {
-    return []
-  }
-}
-
-function readSavedMode(): GameMode {
-  return readStorage(MODE_STORAGE_KEY) === 'classic' ? 'classic' : 'architects'
-}
-
-function readSavedClassicPacks(): string[] {
-  const saved = readStorage(CLASSIC_PACKS_STORAGE_KEY)
-
-  if (!saved) return CLASSIC_PACKS.map((pack) => pack.id)
-
-  try {
-    const packs = JSON.parse(saved)
-    return Array.isArray(packs) &&
-      packs.every((pack) =>
-        CLASSIC_PACKS.some((classicPack) => classicPack.id === pack),
-      )
-      ? packs
-      : CLASSIC_PACKS.map((pack) => pack.id)
-  } catch {
-    return CLASSIC_PACKS.map((pack) => pack.id)
-  }
-}
-
-function readSavedMedals(): boolean {
-  return readStorage(MEDALS_STORAGE_KEY) !== 'false'
-}
+import { GameMode } from './types'
+import { LanguageProvider } from './context/LanguageContext'
+import AppHeader from './components/AppHeader'
+import PlayersCard from './components/PlayersCard'
+import DrawButton from './components/DrawButton'
+import ResultsList from './components/ResultsList'
+import {
+  readSavedClassicPacks,
+  readSavedMedals,
+  readSavedMode,
+  readSavedPlayers,
+  writeSavedClassicPacks,
+  writeSavedMedals,
+  writeSavedMode,
+  writeSavedPlayers,
+} from './storage'
 
 function triggerHaptic() {
   if ('vibrate' in navigator) navigator.vibrate(20)
@@ -116,27 +51,18 @@ function App() {
   const [medalsEnabled, setMedalsEnabled] = useState(readSavedMedals)
   const [assignments, setAssignments] = useState<Assignment[]>([])
   const [firstPlayerIndex, setFirstPlayerIndex] = useState<number | null>(null)
-  const [language, setLanguage] = useState<Language>(readSavedLanguage)
-  const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false)
-  const t = translations[language]
-  const selectedLanguage = LANGUAGES.find((item) => item.code === language)
 
   useEffect(() => {
-    writeStorage(PLAYERS_STORAGE_KEY, JSON.stringify(players))
+    writeSavedPlayers(players)
   }, [players])
 
   useEffect(() => {
-    writeStorage(MODE_STORAGE_KEY, mode)
+    writeSavedMode(mode)
   }, [mode])
 
   useEffect(() => {
-    writeStorage(CLASSIC_PACKS_STORAGE_KEY, JSON.stringify(classicPacks))
+    writeSavedClassicPacks(classicPacks)
   }, [classicPacks])
-
-  useEffect(() => {
-    writeStorage(LANGUAGE_STORAGE_KEY, language)
-    document.documentElement.lang = language
-  }, [language])
 
   useEffect(() => {
     const colorScheme = window.matchMedia('(prefers-color-scheme: dark)')
@@ -155,7 +81,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    writeStorage(MEDALS_STORAGE_KEY, String(medalsEnabled))
+    writeSavedMedals(medalsEnabled)
   }, [medalsEnabled])
 
   const maxAllowed =
@@ -221,236 +147,45 @@ function App() {
   }
 
   return (
-    <div className="app-screen">
-      <header>
-        <div className="header-row">
-          <h1>7 Wonders</h1>
-          <div className="language-picker">
-            <button
-              className="language-button"
-              type="button"
-              aria-label={t.language}
-              aria-haspopup="listbox"
-              aria-expanded={isLanguageMenuOpen}
-              onClick={() => setIsLanguageMenuOpen((isOpen) => !isOpen)}
-            >
-              <span aria-hidden="true">{selectedLanguage?.flag}</span>
-              <span className="language-code" aria-hidden="true">
-                {selectedLanguage?.label}
-              </span>
-              <span className="language-chevron" aria-hidden="true">
-                ▾
-              </span>
-            </button>
-            {isLanguageMenuOpen && (
-              <div
-                className="language-menu"
-                role="listbox"
-                aria-label={t.language}
-              >
-                {LANGUAGES.map((item) => (
-                  <button
-                    className={`language-option ${
-                      item.code === language ? 'selected' : ''
-                    }`}
-                    key={item.code}
-                    type="button"
-                    role="option"
-                    aria-selected={item.code === language}
-                    onClick={() => {
-                      setLanguage(item.code)
-                      setIsLanguageMenuOpen(false)
-                    }}
-                  >
-                    <span aria-hidden="true">{item.flag}</span>
-                    <span>{item.label}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-        <p className="subtitle">{t.subtitle}</p>
-      </header>
+    <LanguageProvider>
+      <div className="app-screen">
+        <AppHeader />
 
-      <section className="card" aria-labelledby="players-title">
-        <div className="card-title">
-          <span id="players-title">
-            {t.players} ({players.length} / {maxAllowed})
-          </span>
-          {players.length > 0 && (
-            <button
-              className="clear-btn"
-              type="button"
-              onClick={clearAllPlayers}
-            >
-              {t.clear}
-            </button>
-          )}
-        </div>
+        <PlayersCard
+          players={players}
+          maxAllowed={maxAllowed}
+          nameInput={nameInput}
+          mode={mode}
+          medalsEnabled={medalsEnabled}
+          classicPacks={classicPacks}
+          onNameInputChange={setNameInput}
+          onAddPlayer={addPlayer}
+          onRemovePlayer={removePlayer}
+          onClearAllPlayers={clearAllPlayers}
+          onSelectMode={setMode}
+          onToggleMedals={() => setMedalsEnabled((enabled) => !enabled)}
+          onTogglePack={(packId) => {
+            setMode('classic')
+            setClassicPacks((currentPacks) =>
+              currentPacks.includes(packId)
+                ? currentPacks.filter((item) => item !== packId)
+                : [...currentPacks, packId],
+            )
+          }}
+        />
 
-        {players.length > maxAllowed ? (
-          <div className="limit-reached-badge">
-            {t.overMax} ({maxAllowed})
-          </div>
-        ) : players.length === maxAllowed ? (
-          <div className="limit-reached-badge">
-            {t.max} ({maxAllowed})
-          </div>
-        ) : (
-          <form className="input-row" onSubmit={addPlayer}>
-            <input
-              type="text"
-              className="text-input"
-              placeholder={t.add}
-              value={nameInput}
-              onChange={(event) => setNameInput(event.target.value)}
-              maxLength={20}
-              aria-label={t.playerName}
-            />
-            <button type="submit" className="btn-add" aria-label={t.addPlayer}>
-              +
-            </button>
-          </form>
-        )}
+        <DrawButton
+          canDraw={canDraw}
+          hasDrawn={assignments.length > 0}
+          onDraw={drawWonders}
+        />
 
-        <div className="player-list" aria-live="polite">
-          {players.length === 0 && (
-            <span className="empty-state">{t.empty}</span>
-          )}
-          {players.map((name, index) => (
-            <div className="player-chip" key={`${name}-${index}`}>
-              <span>{name}</span>
-              <button
-                className="chip-delete"
-                type="button"
-                aria-label={`Supprimer ${name}`}
-                onClick={() => removePlayer(index)}
-              >
-                ×
-              </button>
-            </div>
-          ))}
-        </div>
-
-        <div className="extension-choices" role="group" aria-label={t.mode}>
-          <div className="mode-toggle" role="tablist" aria-label={t.game}>
-            <button
-              className={`mode-toggle-button ${
-                mode === 'classic' ? 'active' : ''
-              }`}
-              type="button"
-              role="tab"
-              aria-selected={mode === 'classic'}
-              onClick={() => setMode('classic')}
-            >
-              Classic
-            </button>
-            <button
-              className={`mode-toggle-button ${
-                mode === 'architects' ? 'active' : ''
-              }`}
-              type="button"
-              role="tab"
-              aria-selected={mode === 'architects'}
-              onClick={() => setMode('architects')}
-            >
-              Architects
-            </button>
-          </div>
-
-          {mode === 'architects' ? (
-            <div className="classic-extension-list">
-              <button
-                className="extension-row"
-                type="button"
-                aria-pressed={medalsEnabled}
-                onClick={() => setMedalsEnabled((enabled) => !enabled)}
-              >
-                <span>
-                  <strong>Medals</strong>
-                  <small>
-                    + {WONDER_NAMES.rome[language]} &amp;{' '}
-                    {WONDER_NAMES.ur[language]} ({t.upTo} 9) + Rome &amp; Ur
-                    (jusqu&apos;a {BASE_WONDERS.length + MEDALS_WONDERS.length})
-                  </small>
-                </span>
-                <span
-                  className={`switch ${medalsEnabled ? 'active' : ''}`}
-                  aria-hidden="true"
-                />
-              </button>
-            </div>
-          ) : (
-            <div className="classic-extension-list">
-              {CLASSIC_PACKS.map((pack) => {
-                const selected =
-                  mode === 'classic' && classicPacks.includes(pack.id)
-
-                return (
-                  <button
-                    className="extension-row"
-                    type="button"
-                    aria-pressed={selected}
-                    key={pack.id}
-                    onClick={() => {
-                      setMode('classic')
-                      setClassicPacks((currentPacks) =>
-                        currentPacks.includes(pack.id)
-                          ? currentPacks.filter((item) => item !== pack.id)
-                          : [...currentPacks, pack.id],
-                      )
-                    }}
-                  >
-                    <span>
-                      <strong>
-                        {pack.id === 'cities' ? 'Cities' : 'Wonder Pack'}
-                      </strong>
-                      <small>
-                        + {pack.wonders.length} {t.wonders} ({t.upTo}{' '}
-                        {BASE_WONDERS.length + pack.wonders.length})
-                      </small>
-                    </span>
-                    <span
-                      className={`switch ${selected ? 'active' : ''}`}
-                      aria-hidden="true"
-                    />
-                  </button>
-                )
-              })}
-            </div>
-          )}
-        </div>
-      </section>
-
-      <button
-        className="btn-draw"
-        type="button"
-        disabled={!canDraw}
-        onClick={drawWonders}
-      >
-        <span aria-hidden="true">*</span>
-        <span>{assignments.length > 0 ? t.drawAgain : t.draw}</span>
-      </button>
-
-      <div className="results-viewport" aria-live="polite">
-        {assignments.map((assignment, index) => (
-          <div className="result-card" key={`${assignment.player}-${index}`}>
-            <span className="res-player">
-              {index === firstPlayerIndex && (
-                <span className="first-player-flag" aria-label={t.first}>
-                  ⚑
-                </span>
-              )}
-              {assignment.player}
-            </span>
-            <span className="res-wonder">
-              {WONDER_NAMES[assignment.wonder][language]}
-            </span>
-          </div>
-        ))}
+        <ResultsList
+          assignments={assignments}
+          firstPlayerIndex={firstPlayerIndex}
+        />
       </div>
-    </div>
+    </LanguageProvider>
   )
 }
 

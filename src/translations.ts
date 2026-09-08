@@ -12,7 +12,7 @@ export const translations = {
     game: 'Jeu',
     medals: 'Medals',
     wonders: 'merveilles',
-    upTo: "jusqu'a",
+    upTo: "jusqu'à",
     drawAgain: 'Re-tirer',
     draw: 'Tirer les merveilles',
     first: 'Premier joueur',

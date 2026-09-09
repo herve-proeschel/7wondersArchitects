@@ -192,8 +192,11 @@ header {
   z-index: 2;
   display: grid;
   min-width: 190px;
+  max-width: calc(100vw - 28px);
+  max-height: min(70vh, 420px);
   gap: 4px;
   padding: 8px;
+  overflow-y: auto;
   background: var(--color-surface);
   border: 1px solid var(--color-border-strong);
   border-radius: 8px;

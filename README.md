@@ -12,7 +12,7 @@ The app is built as a client-side React application, so no server or account is 
 - Random first-player selection.
 - English, French, German, Italian, and Spanish UI translations.
 - Responsive layout for desktop and mobile screens.
-- Installable PWA with a service worker for caching application assets.
+- Installable PWA with offline app-shell caching and automatic service-worker updates.
 - Haptic feedback on supported devices.
 
 ## Requirements
@@ -65,6 +65,24 @@ npm run preview
 
 Then open the URL printed by Vite and verify player management, mode and pack selection, wonder drawing, language switching, persistence after reload, and mobile layout.
 
+## PWA Offline and Update Behavior
+
+The production build generates a versioned service worker from the final `dist/` contents so every deployment produces a new cache identity whenever `index.html`, the manifest, the icon, or hashed assets change.
+
+The generated service worker uses an application-shell strategy:
+
+- precache `index.html`, the generated JS and CSS bundles, `manifest.webmanifest`, and `app-icon.svg`;
+- serve the cached application shell for navigation requests so the SPA can start offline;
+- delete outdated caches during activation so only the latest successful version remains active.
+
+The application checks for service-worker updates automatically:
+
+- on startup, right after registration;
+- when the document becomes visible again;
+- when the browser regains network connectivity.
+
+When a new service worker finishes installing, the app asks it to activate immediately with `skipWaiting()`. Once the new worker takes control, the page reloads automatically so the installed Android application starts using the latest deployed assets without manual cache clearing. If downloading a new version fails, the currently active cached version keeps serving the app.
+
 ## Deployment
 
 The repository includes a GitHub Actions workflow at `.github/workflows/deploy.yml` for GitHub Pages.
@@ -100,19 +118,19 @@ $env:BASE_PATH = '/my-app/'
 npm run build
 ```
 
-Configure the host to serve `index.html` for the application entry point and allow the generated `sw.js` file to be served from the same base path.
+Configure the host to serve `index.html` for the application entry point and allow the generated `sw.js` file to be served from the same base path. The manifest uses relative URLs (`./`) so the installed PWA remains compatible with GitHub Pages repository subpaths, while service-worker registration explicitly uses `import.meta.env.BASE_URL` as both URL and scope.
 
 ## Project Structure
 
 ```text
 .
-├── public/              Static PWA files, manifest, and service worker
+├── public/              Static PWA assets copied as-is (manifest and icon)
 ├── src/
 │   ├── components/      Reusable UI components for players, modes, packs, and results
 │   ├── context/         React context providers, including language state
 │   ├── App.tsx          Main application UI and game interactions
 │   ├── index.css        Application styles
-│   ├── main.tsx         React entry point and service-worker registration
+│   ├── main.tsx         React entry point and service-worker update handling
 │   ├── storage.ts       Browser localStorage persistence helpers
 │   ├── translations.ts  UI translations for supported languages
 │   ├── types.ts         Shared TypeScript types
@@ -122,7 +140,7 @@ Configure the host to serve `index.html` for the application entry point and all
 ├── index.html           HTML entry point
 ├── package.json         Scripts and dependencies
 ├── tsconfig*.json       TypeScript configuration
-└── vite.config.ts       Vite configuration and configurable base path
+└── vite.config.ts       Vite configuration, base path, and generated service worker
 ```
 
 ## Data and Privacy

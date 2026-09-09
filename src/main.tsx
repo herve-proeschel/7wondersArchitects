@@ -39,6 +39,77 @@ class ErrorBoundary extends Component<
   }
 }
 
+function registerServiceWorker() {
+  if (!import.meta.env.PROD || !('serviceWorker' in navigator)) {
+    return
+  }
+
+  const serviceWorkerUrl = `${import.meta.env.BASE_URL}sw.js`
+  let isReloading = false
+
+  const requestActivation = (registration: ServiceWorkerRegistration) => {
+    registration.waiting?.postMessage({ type: 'SKIP_WAITING' })
+  }
+
+  const requestUpdate = (registration: ServiceWorkerRegistration) => {
+    void registration.update().catch(() => undefined)
+  }
+
+  const monitorInstallingWorker = (registration: ServiceWorkerRegistration) => {
+    const installingWorker = registration.installing
+
+    if (!installingWorker) {
+      return
+    }
+
+    installingWorker.addEventListener('statechange', () => {
+      if (
+        installingWorker.state === 'installed' &&
+        navigator.serviceWorker.controller
+      ) {
+        requestActivation(registration)
+      }
+    })
+  }
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (isReloading) {
+      return
+    }
+
+    isReloading = true
+    window.location.reload()
+  })
+
+  window.addEventListener('load', () => {
+    void navigator.serviceWorker
+      .register(serviceWorkerUrl, { scope: import.meta.env.BASE_URL })
+      .then((registration) => {
+        if (registration.waiting) {
+          requestActivation(registration)
+        }
+
+        monitorInstallingWorker(registration)
+        registration.addEventListener('updatefound', () => {
+          monitorInstallingWorker(registration)
+        })
+
+        requestUpdate(registration)
+
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') {
+            requestUpdate(registration)
+          }
+        })
+
+        window.addEventListener('online', () => {
+          requestUpdate(registration)
+        })
+      })
+      .catch(() => undefined)
+  })
+}
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <ErrorBoundary>
     <React.StrictMode>
@@ -47,8 +118,4 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   </ErrorBoundary>,
 )
 
-if ('serviceWorker' in navigator) {
-  void navigator.serviceWorker
-    .register(`${import.meta.env.BASE_URL}sw.js`)
-    .catch(() => undefined)
-}
+registerServiceWorker()

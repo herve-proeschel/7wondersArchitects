@@ -2,6 +2,10 @@
   .app-screen {
     overflow-y: auto;
   }
+
+  .language-menu {
+    max-height: min(85vh, 640px);
+  }
 }
 
 @media (orientation: landscape) {

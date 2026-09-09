@@ -62,9 +62,9 @@ function SettingsMenu() {
   }, [theme])
 
   return (
-    <div ref={menuRef} className="language-picker">
+    <div ref={menuRef} className="settings-menu">
       <button
-        className="language-button"
+        className="settings-menu-button"
         type="button"
         aria-label={t.more}
         aria-haspopup="true"
@@ -74,7 +74,7 @@ function SettingsMenu() {
         <span aria-hidden="true">⋯</span>
       </button>
       {isOpen && (
-        <div className="language-menu" aria-label={t.more}>
+        <div className="settings-menu-panel" aria-label={t.more}>
           <LanguageOptions
             language={language}
             t={t}

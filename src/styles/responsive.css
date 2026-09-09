@@ -3,7 +3,7 @@
     overflow-y: auto;
   }
 
-  .language-menu {
+  .settings-menu-panel {
     max-height: min(85vh, 640px);
   }
 }

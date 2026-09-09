@@ -38,20 +38,39 @@ Vite will print the local URL, normally `http://localhost:5173`.
 
 ## Available Scripts
 
-| Command                | Description                                                       |
-| ---------------------- | ----------------------------------------------------------------- |
-| `npm run dev`          | Start the Vite development server.                                |
-| `npm run build`        | Type-check the project and create a production build in `dist/`.  |
-| `npm run preview`      | Serve the production build locally after running `npm run build`. |
-| `npm run lint`         | Run ESLint with warnings treated as errors.                       |
-| `npm run format`       | Format source and configuration files with Prettier.              |
-| `npm run format:check` | Check formatting without modifying files.                         |
+| Command                 | Description                                                       |
+| ----------------------- | ----------------------------------------------------------------- |
+| `npm run dev`           | Start the Vite development server.                                |
+| `npm run build`         | Type-check the project and create a production build in `dist/`.  |
+| `npm run preview`       | Serve the production build locally after running `npm run build`. |
+| `npm run lint`          | Run ESLint with warnings treated as errors.                       |
+| `npm test`              | Run the unit and component interaction tests once.                |
+| `npm run test:coverage` | Run the tests and generate a coverage report.                     |
+| `npm run format`        | Format source and configuration files with Prettier.              |
+| `npm run format:check`  | Check formatting without modifying files.                         |
 
 ## Local Validation
 
-There is currently no dedicated automated test suite. Before opening a change, run the same checks used by continuous integration:
+The automated test suite uses Vitest, jsdom, and React Testing Library. It covers storage behavior and the main application workflows, including player management, mode and expansion selection, wonder drawing, settings, language switching, and theme selection.
+
+Run the tests without coverage:
 
 ```bash
+npm test
+```
+
+Run the coverage-enabled suite:
+
+```bash
+npm run test:coverage
+```
+
+The coverage configuration enforces at least 90% statements, lines, and functions, plus 85% branch coverage. The coverage report is also written to `coverage/`.
+
+Before opening a change, run the automated tests and the same static checks used by continuous integration:
+
+```bash
+npm run test:coverage
 npm run format:check
 npm run lint
 npm run build
@@ -92,7 +111,7 @@ The repository includes a GitHub Actions workflow at `.github/workflows/deploy.y
 1. In the GitHub repository, open **Settings > Pages**.
 2. Set the Pages source to **GitHub Actions**.
 3. Push to `main` or run the **Build and deploy** workflow manually from the Actions tab.
-4. The workflow installs dependencies, checks formatting, lints, builds the app, uploads the `dist/` artifact, and deploys it to GitHub Pages.
+4. The workflow installs dependencies, runs the test suite with coverage, checks formatting, lints, builds the app, uploads the `dist/` artifact, and deploys it to GitHub Pages.
 
 The workflow uses the Pages-provided base path when building, so the app also works when hosted under a repository subpath. Deployment occurs only for the `main` branch; other pushes still run the build job as a validation step.
 
@@ -144,9 +163,14 @@ Configure the host to serve `index.html` for the application entry point and all
 │   ├── vite-env.d.ts    Vite client type declarations
 │   └── wonders.ts       Wonder data, packs, and language metadata
 ├── .github/             GitHub Actions workflow for validation and deployment
+├── tests/                Unit and component interaction tests
+│   ├── app.test.tsx      Main application workflow tests
+│   ├── setup.ts          jsdom and testing-library setup
+│   └── storage.test.ts   localStorage persistence tests
 ├── index.html           HTML entry point
 ├── package.json         Scripts and dependencies
 ├── tsconfig*.json       TypeScript configuration
+├── vitest.config.ts     Test environment and coverage configuration
 └── vite.config.ts       Vite configuration, base path, and generated service worker
 ```
 

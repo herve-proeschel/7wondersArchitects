@@ -65,22 +65,6 @@ function App() {
   }, [classicPacks])
 
   useEffect(() => {
-    const colorScheme = window.matchMedia('(prefers-color-scheme: dark)')
-    const themeColor = document.querySelector('meta[name="theme-color"]')
-    const updateThemeColor = () => {
-      themeColor?.setAttribute(
-        'content',
-        colorScheme.matches ? '#121211' : '#f4f0e8',
-      )
-    }
-
-    updateThemeColor()
-    colorScheme.addEventListener('change', updateThemeColor)
-
-    return () => colorScheme.removeEventListener('change', updateThemeColor)
-  }, [])
-
-  useEffect(() => {
     writeSavedMedals(medalsEnabled)
   }, [medalsEnabled])
 

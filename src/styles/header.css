@@ -82,12 +82,22 @@ header {
   font-weight: 700;
 }
 
+.language-option + .language-option {
+  border-top: 1px solid var(--color-border);
+}
+
 .menu-section-title {
   color: var(--color-muted);
   margin-top: 2px;
   font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
+}
+
+.menu-section-title:not(:first-child) {
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border-strong);
 }
 
 .language-option:hover,

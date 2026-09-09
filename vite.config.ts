@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
+import { execSync } from 'node:child_process'
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 
@@ -8,6 +9,13 @@ const configuredBasePath = process.env.BASE_PATH || '/'
 const basePath = configuredBasePath.endsWith('/')
   ? configuredBasePath
   : `${configuredBasePath}/`
+const shortCommitHash = (() => {
+  try {
+    return execSync('git rev-parse --short HEAD').toString().trim()
+  } catch {
+    return 'unknown'
+  }
+})()
 
 function createServiceWorkerSource(
   version: string,
@@ -163,5 +171,8 @@ function serviceWorkerPlugin(scope: string): Plugin {
 
 export default defineConfig({
   base: basePath,
+  define: {
+    'import.meta.env.VITE_COMMIT_HASH': JSON.stringify(shortCommitHash),
+  },
   plugins: [react(), serviceWorkerPlugin(basePath)],
 })

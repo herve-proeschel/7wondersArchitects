@@ -6,6 +6,9 @@ const MODE_STORAGE_KEY = '7w_mode_fs'
 const CLASSIC_PACKS_STORAGE_KEY = '7w_classic_packs_fs'
 const LANGUAGE_STORAGE_KEY = '7w_language_fs'
 const MEDALS_STORAGE_KEY = '7w_medals_fs'
+const THEME_STORAGE_KEY = '7w_theme_fs'
+
+export type Theme = 'system' | 'dark' | 'light'
 
 function readStorage(key: string): string | null {
   try {
@@ -94,4 +97,13 @@ export function readSavedMedals(): boolean {
 
 export function writeSavedMedals(medalsEnabled: boolean) {
   writeStorage(MEDALS_STORAGE_KEY, String(medalsEnabled))
+}
+
+export function readSavedTheme(): Theme {
+  const saved = readStorage(THEME_STORAGE_KEY)
+  return saved === 'dark' || saved === 'light' ? saved : 'system'
+}
+
+export function writeSavedTheme(theme: Theme) {
+  writeStorage(THEME_STORAGE_KEY, theme)
 }

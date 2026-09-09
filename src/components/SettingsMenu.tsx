@@ -139,10 +139,6 @@ function SettingsMenu() {
         onClick={() => setIsOpen((isMenuOpen) => !isMenuOpen)}
       >
         <span aria-hidden="true">⋯</span>
-        <span className="language-code">{t.more}</span>
-        <span className="language-chevron" aria-hidden="true">
-          ▾
-        </span>
       </button>
       {isOpen && (
         <div className="language-menu" aria-label={t.more}>

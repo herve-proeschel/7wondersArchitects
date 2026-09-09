@@ -1,100 +1,12 @@
 import { useEffect, useState } from 'react'
-import { LANGUAGES, Language } from '../wonders'
 import { useLanguage } from '../context/LanguageContext'
 import { readSavedTheme, Theme, writeSavedTheme } from '../storage'
-
-const THEME_CHOICES: Theme[] = ['system', 'dark', 'light']
+import AboutSection from './AboutSection'
+import LanguageOptions from './LanguageOptions'
+import ThemeOptions from './ThemeOptions'
 
 function isDarkTheme(theme: Theme, prefersDark: boolean) {
   return theme === 'dark' || (theme === 'system' && prefersDark)
-}
-
-type LanguageOptionsProps = {
-  language: Language
-  t: ReturnType<typeof useLanguage>['t']
-  onSelectLanguage: (languageCode: Language) => void
-}
-
-function LanguageOptions({
-  language,
-  t,
-  onSelectLanguage,
-}: LanguageOptionsProps) {
-  return (
-    <>
-      <p className="menu-section-title">{t.language}</p>
-      {LANGUAGES.map((item) => (
-        <button
-          className={`language-option ${
-            item.code === language ? 'selected' : ''
-          }`}
-          key={item.code}
-          type="button"
-          aria-pressed={item.code === language}
-          onClick={() => onSelectLanguage(item.code)}
-        >
-          <span aria-hidden="true">{item.flag}</span>
-          <span>{item.label}</span>
-        </button>
-      ))}
-    </>
-  )
-}
-
-type ThemeOptionsProps = {
-  theme: Theme
-  t: ReturnType<typeof useLanguage>['t']
-  onSelectTheme: (themeChoice: Theme) => void
-}
-
-function ThemeOptions({ theme, t, onSelectTheme }: ThemeOptionsProps) {
-  return (
-    <>
-      <p className="menu-section-title">{t.theme}</p>
-      {THEME_CHOICES.map((themeChoice) => (
-        <button
-          className={`language-option ${
-            themeChoice === theme ? 'selected' : ''
-          }`}
-          key={themeChoice}
-          type="button"
-          aria-pressed={themeChoice === theme}
-          onClick={() => onSelectTheme(themeChoice)}
-        >
-          {themeChoice === 'system'
-            ? t.themeSystem
-            : themeChoice === 'dark'
-            ? t.themeDark
-            : t.themeLight}
-        </button>
-      ))}
-    </>
-  )
-}
-
-type AboutSectionProps = {
-  commitHash: string
-  t: ReturnType<typeof useLanguage>['t']
-}
-
-function AboutSection({ commitHash, t }: AboutSectionProps) {
-  return (
-    <>
-      <p className="menu-section-title">{t.about}</p>
-      <p className="menu-about">{t.aboutText}</p>
-      <a
-        className="menu-link"
-        href="https://github.com/herve-proeschel/7wondersArchitects"
-        target="_blank"
-        rel="noreferrer"
-      >
-        {t.project}
-      </a>
-      <p className="menu-commit">
-        {t.commit}: <code>{commitHash}</code>
-      </p>
-    </>
-  )
 }
 
 function SettingsMenu() {

@@ -29,6 +29,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
       - name: Configure GitHub Pages
         id: pages
         uses: actions/configure-pages@v6

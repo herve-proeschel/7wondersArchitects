@@ -1,5 +1,5 @@
 import { useLanguage } from '../context/LanguageContext'
-import LanguagePicker from './LanguagePicker'
+import SettingsMenu from './SettingsMenu'
 
 function AppHeader() {
   const { t } = useLanguage()
@@ -8,7 +8,7 @@ function AppHeader() {
     <header>
       <div className="header-row">
         <h1>7 Wonders</h1>
-        <LanguagePicker />
+        <SettingsMenu />
       </div>
       <p className="subtitle">{t.subtitle}</p>
     </header>

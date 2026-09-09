@@ -38,14 +38,14 @@ Vite will print the local URL, normally `http://localhost:5173`.
 
 ## Available Scripts
 
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Start the Vite development server. |
-| `npm run build` | Type-check the project and create a production build in `dist/`. |
-| `npm run preview` | Serve the production build locally after running `npm run build`. |
-| `npm run lint` | Run ESLint with warnings treated as errors. |
-| `npm run format` | Format source and configuration files with Prettier. |
-| `npm run format:check` | Check formatting without modifying files. |
+| Command                | Description                                                       |
+| ---------------------- | ----------------------------------------------------------------- |
+| `npm run dev`          | Start the Vite development server.                                |
+| `npm run build`        | Type-check the project and create a production build in `dist/`.  |
+| `npm run preview`      | Serve the production build locally after running `npm run build`. |
+| `npm run lint`         | Run ESLint with warnings treated as errors.                       |
+| `npm run format`       | Format source and configuration files with Prettier.              |
+| `npm run format:check` | Check formatting without modifying files.                         |
 
 ## Local Validation
 
@@ -129,7 +129,14 @@ Configure the host to serve `index.html` for the application entry point and all
 │   ├── components/      Reusable UI components for players, modes, packs, and results
 │   ├── context/         React context providers, including language state
 │   ├── App.tsx          Main application UI and game interactions
-│   ├── index.css        Application styles
+│   ├── index.css        CSS entry point that imports the application styles
+│   ├── styles/           Styles split by UI concern and responsive layout
+│   │   ├── base.css      Theme variables, reset, and global layout styles
+│   │   ├── extensions.css Extension and mode selection controls
+│   │   ├── header.css    Header and language menu styles
+│   │   ├── players.css   Player management card and input styles
+│   │   ├── results.css   Draw button and result list styles
+│   │   └── responsive.css Portrait and landscape layout rules
 │   ├── main.tsx         React entry point and service-worker update handling
 │   ├── storage.ts       Browser localStorage persistence helpers
 │   ├── translations.ts  UI translations for supported languages

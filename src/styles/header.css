@@ -1,0 +1,122 @@
+header,
+.btn-draw,
+.results-viewport {
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+header {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.header-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.language-picker {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  z-index: 3;
+  display: block;
+  transform: translateY(-50%);
+}
+
+.language-button {
+  display: flex;
+  min-width: 60px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 5px 7px;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 7px;
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.language-code {
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.language-chevron {
+  color: var(--color-accent);
+  font-size: 0.7rem;
+}
+
+.language-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 2;
+  display: grid;
+  min-width: 190px;
+  max-width: calc(100vw - 28px);
+  max-height: min(70vh, 420px);
+  gap: 4px;
+  padding: 8px;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 8px;
+  box-shadow: 0 8px 18px var(--color-shadow);
+  text-align: left;
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-accent);
+  padding: 7px 8px;
+  background: transparent;
+  border: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.menu-section-title {
+  color: var(--color-muted);
+  margin-top: 2px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.language-option:hover,
+.language-option.selected {
+  color: var(--color-accent-dark);
+  background: var(--color-accent);
+}
+
+.menu-about,
+.menu-commit {
+  color: var(--color-text);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.menu-link {
+  color: var(--color-accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+h1 {
+  color: var(--color-accent);
+  font-size: clamp(2rem, 8vw, 3.6rem);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  color: var(--color-muted);
+  font-size: clamp(0.75rem, 3.4vw, 1.5rem);
+}

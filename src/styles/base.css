@@ -1,0 +1,142 @@
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color-scheme: dark light;
+  --color-page: #121211;
+  --color-surface: #1e1d1a;
+  --color-surface-raised: #282622;
+  --color-input: #121211;
+  --color-text: #f5f5f5;
+  --color-muted: #9c978b;
+  --color-accent: #dfb15b;
+  --color-accent-dark: #121211;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.14);
+  --color-shadow: rgba(0, 0, 0, 0.35);
+  color: var(--color-text);
+  background: var(--color-page);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+:root[data-theme='light'] {
+  --color-page: #f4f0e8;
+  --color-surface: #fffdf8;
+  --color-surface-raised: #e9e2d5;
+  --color-input: #f4f0e8;
+  --color-text: #211f1a;
+  --color-muted: #6f6a5d;
+  --color-accent: #9a6814;
+  --color-accent-dark: #fffdf8;
+  --color-border: rgba(33, 31, 26, 0.12);
+  --color-border-strong: rgba(33, 31, 26, 0.2);
+  --color-shadow: rgba(33, 31, 26, 0.18);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --color-page: #f4f0e8;
+    --color-surface: #fffdf8;
+    --color-surface-raised: #e9e2d5;
+    --color-input: #f4f0e8;
+    --color-text: #211f1a;
+    --color-muted: #6f6a5d;
+    --color-accent: #9a6814;
+    --color-accent-dark: #fffdf8;
+    --color-border: rgba(33, 31, 26, 0.12);
+    --color-border-strong: rgba(33, 31, 26, 0.2);
+    --color-shadow: rgba(33, 31, 26, 0.18);
+  }
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+input {
+  user-select: text;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+html,
+body {
+  min-width: 320px;
+  background: var(--color-page);
+  overflow: hidden;
+}
+
+body {
+  color: var(--color-text);
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.app-screen {
+  height: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: max(12px, env(safe-area-inset-top)) 0
+    max(14px, env(safe-area-inset-bottom));
+}
+
+.error-screen {
+  display: grid;
+  min-height: 100%;
+  place-content: center;
+  gap: 12px;
+  padding: 24px;
+  color: var(--color-text);
+  text-align: center;
+}
+
+.error-screen h1 {
+  font-size: 1.5rem;
+}
+
+.error-screen p {
+  color: var(--color-accent);
+  overflow-wrap: anywhere;
+}
+
+.error-screen button {
+  padding: 10px 14px;
+  color: var(--color-accent-dark);
+  background: var(--color-accent);
+  border: 0;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

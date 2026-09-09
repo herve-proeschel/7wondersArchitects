@@ -15,17 +15,22 @@ type LanguageOptionsProps = {
   onSelectLanguage: (languageCode: Language) => void
 }
 
-function LanguageOptions({ language, t, onSelectLanguage }: LanguageOptionsProps) {
+function LanguageOptions({
+  language,
+  t,
+  onSelectLanguage,
+}: LanguageOptionsProps) {
   return (
     <>
       <p className="menu-section-title">{t.language}</p>
       {LANGUAGES.map((item) => (
         <button
-          className={`language-option ${item.code === language ? 'selected' : ''}`}
+          className={`language-option ${
+            item.code === language ? 'selected' : ''
+          }`}
           key={item.code}
           type="button"
-          role="menuitemradio"
-          aria-checked={item.code === language}
+          aria-pressed={item.code === language}
           onClick={() => onSelectLanguage(item.code)}
         >
           <span aria-hidden="true">{item.flag}</span>
@@ -48,11 +53,12 @@ function ThemeOptions({ theme, t, onSelectTheme }: ThemeOptionsProps) {
       <p className="menu-section-title">{t.theme}</p>
       {THEME_CHOICES.map((themeChoice) => (
         <button
-          className={`language-option ${themeChoice === theme ? 'selected' : ''}`}
+          className={`language-option ${
+            themeChoice === theme ? 'selected' : ''
+          }`}
           key={themeChoice}
           type="button"
-          role="menuitemradio"
-          aria-checked={themeChoice === theme}
+          aria-pressed={themeChoice === theme}
           onClick={() => onSelectTheme(themeChoice)}
         >
           {themeChoice === 'system'
@@ -128,7 +134,7 @@ function SettingsMenu() {
         className="language-button"
         type="button"
         aria-label={t.more}
-        aria-haspopup="menu"
+        aria-haspopup="true"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((isMenuOpen) => !isMenuOpen)}
       >
@@ -139,7 +145,7 @@ function SettingsMenu() {
         </span>
       </button>
       {isOpen && (
-        <div className="language-menu" role="menu" aria-label={t.more}>
+        <div className="language-menu" aria-label={t.more}>
           <LanguageOptions
             language={language}
             t={t}

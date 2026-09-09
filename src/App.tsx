@@ -121,10 +121,12 @@ function App() {
     const shuffledWonders = shuffle(wonderPool)
 
     setAssignments(
-      players.map((player, index) => ({
-        player,
-        wonder: shuffledWonders[index],
-      })),
+      shuffle(
+        players.map((player, index) => ({
+          player,
+          wonder: shuffledWonders[index],
+        })),
+      ),
     )
     setFirstPlayerIndex(Math.floor(Math.random() * players.length))
     triggerHaptic()

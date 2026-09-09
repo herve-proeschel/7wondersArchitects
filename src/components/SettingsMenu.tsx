@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLanguage } from '../context/LanguageContext'
 import { readSavedTheme, Theme, writeSavedTheme } from '../storage'
 import AboutSection from './AboutSection'
@@ -13,7 +13,28 @@ function SettingsMenu() {
   const { language, setLanguage, t } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
   const [theme, setTheme] = useState<Theme>(readSavedTheme)
+  const menuRef = useRef<HTMLDivElement>(null)
   const commitHash = import.meta.env.VITE_COMMIT_HASH || 'dev'
+
+  useEffect(() => {
+    if (!isOpen) {
+      return
+    }
+
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (
+        event.target instanceof Node &&
+        !menuRef.current?.contains(event.target)
+      ) {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener('pointerdown', closeOnOutsidePointer)
+
+    return () =>
+      document.removeEventListener('pointerdown', closeOnOutsidePointer)
+  }, [isOpen])
 
   useEffect(() => {
     const colorScheme = window.matchMedia('(prefers-color-scheme: dark)')
@@ -41,7 +62,7 @@ function SettingsMenu() {
   }, [theme])
 
   return (
-    <div className="language-picker">
+    <div ref={menuRef} className="language-picker">
       <button
         className="language-button"
         type="button"

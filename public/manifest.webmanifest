@@ -4,6 +4,7 @@
   "description": "Tirage au sort des merveilles pour 7 Wonders Classic & Architects.",
   "lang": "fr",
   "dir": "ltr",
+  "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

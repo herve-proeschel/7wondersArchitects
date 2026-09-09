@@ -561,10 +561,7 @@ h1 {
     grid-row: 2;
     align-self: stretch;
     flex-direction: row;
-    min-width: 32px;
     padding: 16px 5px;
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
     font-size: clamp(0.8rem, 2vw, 1rem);
     text-align: center;
     white-space: nowrap;

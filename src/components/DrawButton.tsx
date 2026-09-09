@@ -16,7 +16,6 @@ function DrawButton({ canDraw, hasDrawn, onDraw }: DrawButtonProps) {
       disabled={!canDraw}
       onClick={onDraw}
     >
-      <span aria-hidden="true">*</span>
       <span>{hasDrawn ? t.drawAgain : t.draw}</span>
     </button>
   )
